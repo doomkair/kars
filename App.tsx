@@ -1,20 +1,41 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import { NativeBaseProvider, Box } from "native-base";
+import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
+import { HomeScreen, LoginScreen } from "./app/screens";
+
+const { Navigator, Screen } = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <SafeAreaView style={styles.safeContainer}>
+        <NativeBaseProvider>
+          <Navigator
+            screenOptions={{
+              headerShown: false,
+              contentStyle: styles.screen,
+            }}
+            initialRouteName="login"
+          >
+            <Screen name="home" component={HomeScreen} />
+            <Screen name="login" component={LoginScreen} />
+          </Navigator>
+        </NativeBaseProvider>
+
+        <ExpoStatusBar style="auto" />
+      </SafeAreaView>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  screen: {
+    backgroundColor: "white",
   },
 });
